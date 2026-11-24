@@ -17,7 +17,7 @@
  * Spots: x/y in map % (0-100 of the floorplan image), t title, d description, check: true = not used in the fit.
  */
 (() => {
-const VERSION = "2.0.0";
+const VERSION = "2.0.1";
 
 // RMM transform, copied from fusion_engine._calculate_standard_coord (radar_type 2).
 function project(layout, xmm, ymm) {
@@ -398,7 +398,8 @@ h3{font-size:16px;font-weight:800;margin:16px 0 4px}
       const f = this.fit.layout, cm = this.fit.rms * 100;
       const cls = cm < 25 ? "ok" : cm < 50 ? "warn" : "bad";
       const ratio = Math.max(f.scale_x, f.scale_y) / Math.min(f.scale_x, f.scale_y);
-      const keepH = this.$("height") ? this.$("height").value : ((lay && lay.mount_height) || 1.5);
+      const keepH = (this.$("height") && this._hFor === this.radar) ? this.$("height").value : ((lay && lay.mount_height) || 1.5);
+      this._hFor = this.radar;
       fh = `<div class="res"><div>Average miss</div><div class="num ${cls}">${cm.toFixed(0)} cm</div>
         <div style="color:var(--c-mute)">${cm < 25 ? "Good. Apply it." : cm < 50 ? "OK. A redo of the worst spot may help." : "Poor. Remove the worst spot or recapture it."}${pts.length < 4 ? " Add one more spot for a safer fit." : ""}${ratio > 1.8 ? ' <span class="warn">Scales differ a lot: check the board is upright, not sideways.</span>' : ""}</div>
         <div style="margin-top:8px;font-size:13px">rotation ${f.rotation.toFixed(1)}° · scale ${f.scale_x.toFixed(2)} / ${f.scale_y.toFixed(2)} · origin ${f.origin_x.toFixed(1)}, ${f.origin_y.toFixed(1)}${f.mirror_x ? " · mirrored" : ""}</div>
